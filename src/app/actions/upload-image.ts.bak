@@ -1,0 +1,56 @@
+'use server';
+
+import { createServerClient } from '@/lib/supabase/client';
+
+export async function uploadImage(
+    base64Image: string,
+    fileName: string,
+    bucket: 'PROFILE-PHOTOS' | 'HEADER-IMAGES'
+) {
+    try {
+        const supabase = createServerClient();
+
+        // Convert base64 to buffer
+        const base64Data = base64Image.replace(/^data:image\/\w+;base64,/, '');
+        const buffer = Buffer.from(base64Data, 'base64');
+
+        // Generate unique filename
+        const timestamp = Date.now();
+        const uniqueFileName = `${timestamp}_${fileName}`;
+
+        // Upload to Supabase Storage
+        const { data, error } = await supabase
+            .storage
+            .from(bucket)
+            .upload(uniqueFileName, buffer, {
+                contentType: 'image/jpeg',
+                cacheControl: '3600',
+                upsert: false
+            });
+
+        if (error) {
+            console.error('Upload error:', error);
+            throw error;
+        }
+
+        // Get public URL
+        const { data: { publicUrl } } = supabase
+            .storage
+            .from(bucket)
+            .getPublicUrl(data.path);
+
+        return {
+            success: true,
+            url: publicUrl,
+            path: data.path
+        };
+
+    } catch (error: unknown) {
+        console.error('Image upload error:', error);
+        const message = error instanceof Error ? error.message : 'Failed to upload image';
+        return {
+            success: false,
+            error: message
+        };
+    }
+}
