@@ -121,7 +121,7 @@ export async function GET() {
       status: 'pending' as const,
     };
 
-    const { data, error } = await supabase
+    const { data, error } = await (supabase as any)
       .from('profiles')
       .insert(testProfile)
       .select()
