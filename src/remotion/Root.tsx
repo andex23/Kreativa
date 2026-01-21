@@ -18,7 +18,7 @@ export const RemotionRoot = () => {
             />
             <Composition
                 id="profile-showcase"
-                component={ProfileShowcase}
+                component={ProfileShowcase as any}
                 durationInFrames={150}
                 fps={30}
                 width={1920}
