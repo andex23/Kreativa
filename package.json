@@ -6,14 +6,18 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "remotion:studio": "remotion studio src/remotion/Root.tsx",
+    "remotion:render": "remotion render src/remotion/Root.tsx"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
+    "@remotion/cli": "^4.0.407",
     "@supabase/supabase-js": "^2.90.1",
     "next": "16.1.2",
     "react": "19.2.3",
-    "react-dom": "19.2.3"
+    "react-dom": "19.2.3",
+    "remotion": "^4.0.407"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
