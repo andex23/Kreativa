@@ -85,8 +85,7 @@ export async function submitProfile(formData: ProfileFormData) {
         };
 
         // Insert into profiles table
-        // @ts-ignore
-        const { data: profile, error: profileError } = await supabase
+        const { data: profile, error: profileError } = await (supabase as any)
             .from('profiles')
             .insert(profileData)
             .select()
@@ -117,9 +116,8 @@ export async function submitProfile(formData: ProfileFormData) {
                 });
 
             if (socialLinksData.length > 0) {
-                const { error: linksError } = await supabase
+                const { error: linksError } = await (supabase as any)
                     .from('social_links')
-                    // @ts-ignore
                     .insert(socialLinksData);
 
                 if (linksError) {
@@ -130,8 +128,7 @@ export async function submitProfile(formData: ProfileFormData) {
         }
 
         // Log submission
-        // @ts-ignore
-        await supabase.from('submission_logs').insert({
+        await (supabase as any).from('submission_logs').insert({
             profile_id: profile.id,
             action: 'submit_profile',
             notes: JSON.stringify({ platform: formData.primary_platform, category: formData.category }),
