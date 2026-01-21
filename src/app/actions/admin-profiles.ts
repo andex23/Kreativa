@@ -25,9 +25,8 @@ async function logAuditAction(action: string, details: any, userId?: string) {
         const supabase = getAdminClient();
         await supabase.from('submission_logs').insert({
             action,
-            details: JSON.stringify(details),
-            user_id: userId,
-            created_at: new Date().toISOString()
+            notes: JSON.stringify(details),
+            performed_by: userId,
         });
     } catch (error) {
         console.error('Failed to log audit action:', error);
