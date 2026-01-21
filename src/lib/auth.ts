@@ -36,7 +36,7 @@ export async function isAdmin(): Promise<boolean> {
         const { data, error } = await supabase
             .from('admin_users')
             .select('id')
-            .eq('email', user.email)
+            .eq('email', user.email || '')
             .single();
 
         if (error || !data) {
