@@ -7,8 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "remotion:studio": "remotion studio src/remotion/Root.tsx",
-    "remotion:render": "remotion render src/remotion/Root.tsx"
+    "remotion:studio": "remotion studio src/remotion/index.ts",
+    "remotion:render": "remotion render src/remotion/index.ts"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
