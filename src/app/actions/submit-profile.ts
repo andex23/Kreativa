@@ -131,8 +131,7 @@ export async function submitProfile(formData: ProfileFormData) {
         await supabase.from('submission_logs').insert({
             profile_id: profile.id,
             action: 'submit_profile',
-            details: JSON.stringify({ platform: formData.primary_platform, category: formData.category }),
-            created_at: new Date().toISOString(),
+            notes: JSON.stringify({ platform: formData.primary_platform, category: formData.category }),
         });
 
         // Revalidate admin page
