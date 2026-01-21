@@ -3,7 +3,7 @@
 import { createServerClient } from '@/lib/supabase/client';
 import { Profile } from '@/lib/types';
 import { revalidatePath } from 'next/cache';
-import { requireAdmin } from '@/lib/auth';
+import { requireAdmin, getAdminUser } from '@/lib/auth';
 import {
     validateProfileId,
     validateProfileIds,
@@ -13,7 +13,7 @@ import {
 } from '@/lib/validation';
 import { checkRateLimit, RATE_LIMITS, getRateLimitIdentifier } from '@/lib/rate-limit';
 
-function getAdminClient() {
+function getAdminClient(): any {
     if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
         throw new Error('SUPABASE_SERVICE_ROLE_KEY is missing. Please add it to your .env.local file to enable admin operations.');
     }
@@ -23,6 +23,7 @@ function getAdminClient() {
 async function logAuditAction(action: string, details: any, userId?: string) {
     try {
         const supabase = getAdminClient();
+        // @ts-ignore
         await supabase.from('submission_logs').insert({
             action,
             notes: JSON.stringify(details),
@@ -79,7 +80,7 @@ export async function fetchAdminProfiles(page: number = 1, limit: number = 50) {
 export async function approveProfile(id: string) {
     try {
         // Check authorization
-        const user = await requireAdmin();
+        const user = await getAdminUser();
 
         // Rate limiting
         const identifier = await getRateLimitIdentifier('admin-approve');
@@ -114,7 +115,7 @@ export async function approveProfile(id: string) {
 export async function deleteProfile(id: string) {
     try {
         // Check authorization
-        const user = await requireAdmin();
+        const user = await getAdminUser();
 
         // Rate limiting
         const identifier = await getRateLimitIdentifier('admin-delete');
@@ -149,7 +150,7 @@ export async function deleteProfile(id: string) {
 export async function bulkApproveProfiles(ids: string[]) {
     try {
         // Check authorization
-        const user = await requireAdmin();
+        const user = await getAdminUser();
 
         // Rate limiting
         const identifier = await getRateLimitIdentifier('admin-bulk-approve');
@@ -184,7 +185,7 @@ export async function bulkApproveProfiles(ids: string[]) {
 export async function bulkDeleteProfiles(ids: string[]) {
     try {
         // Check authorization
-        const user = await requireAdmin();
+        const user = await getAdminUser();
 
         // Rate limiting
         const identifier = await getRateLimitIdentifier('admin-bulk-delete');
@@ -219,7 +220,7 @@ export async function bulkDeleteProfiles(ids: string[]) {
 export async function updateProfileStatus(id: string, status: string) {
     try {
         // Check authorization
-        const user = await requireAdmin();
+        const user = await getAdminUser();
 
         // Rate limiting
         const identifier = await getRateLimitIdentifier('admin-update-status');
@@ -264,7 +265,7 @@ export async function updateProfileStatus(id: string, status: string) {
 export async function updateProfile(profile: Profile) {
     try {
         // Check authorization
-        const user = await requireAdmin();
+        const user = await getAdminUser();
 
         // Rate limiting
         const identifier = await getRateLimitIdentifier('admin-update-profile');
@@ -288,7 +289,7 @@ export async function updateProfile(profile: Profile) {
         // Sanitize string fields
         const sanitizedData = {
             ...data,
-            name: data.name ? sanitizeString(data.name) : data.name,
+            full_name: data.full_name ? sanitizeString(data.full_name) : data.full_name,
             bio: data.bio ? sanitizeString(data.bio) : data.bio,
             updated_at: new Date().toISOString()
         };
